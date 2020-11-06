@@ -196,3 +196,15 @@
             var a = setInterval(spawnPoint, 3000);
             var b = setInterval(spawnObstacle, 4000);
         }
+
+        function spawnPoint() {
+            if (points.length < maxPoints) {
+                points.push(new Point());
+            }
+        }
+
+        function spawnObstacle() {
+            if (obstacles.length < maxObstacles) {
+                obstacles.push(new Obstacle());
+            }
+        }
