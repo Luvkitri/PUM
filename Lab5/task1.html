@@ -163,3 +163,23 @@
         let animation = true;
         let speedX = 0;
         let roadSpeed = 0;
+
+        var keyPressed = {};
+        document.addEventListener('keydown', function (e) {
+            keyPressed[e.keyCode] = true;
+
+            if (keyPressed.Shift1 == true && keyPressed.Control1 == true) {
+                // Left shift+CONTROL pressed!
+                keyPressed = {}; // reset key map
+            }
+            if (keyPressed.Shift2 == true && keyPressed.Control2 == true) {
+                // Right shift+CONTROL pressed!
+                keyPressed = {};
+            }
+
+        }, false);
+
+        document.addEventListener('keyup', function (e) {
+            keyPressed[e.keyCode] = false;
+            //keyPressed = {};
+        }, false);
