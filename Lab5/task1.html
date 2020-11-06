@@ -208,3 +208,40 @@
                 obstacles.push(new Obstacle());
             }
         }
+
+        function drawObstacles() {
+            obstacles.forEach(obstacle => {
+                obstacle.drawObstacle();
+            });
+        }
+
+        function drawPoints() {
+            points.forEach(point => {
+                point.drawPoint();
+            });
+        }
+
+        function drawBullets() {
+            bullets.forEach((bullet, index, object) => {
+                if (bullet.y < 0) {
+                    object.splice(index, 1);
+                } else {
+                    bullet.y -= 5;
+                    bullet.drawBullet();
+                }
+            });
+        }
+
+        function drawScore() {
+            context.beginPath();
+            context.font = "30px Arial";
+            context.fillStyle = 'black';
+            context.fillText("Score " + score, 10, 30);
+        }
+
+        function drawGameOver() {
+            context.beginPath();
+            context.font = "30px Arial";
+            context.fillStyle = 'black';
+            context.fillText("GAME OVER ", 325, 100);
+        }
