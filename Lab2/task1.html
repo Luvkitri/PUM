@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 1</title>
+    <canvas id="myCanvas" width="1000" height="600" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML canvas tag.</canvas>
+</head>
+
+<body>
+    <p>
+        Proszę (z wykorzystaniem elementu canvas) przygotować animację, w której
+        na ekranie pojawi się po kolei (w ostępach sekundowych) 5 schodków, a na końcu
+        z najwyższego sturla się piłka (kula).
+    </p>
+    <script>
+        let canvas, context, centerY = 10;
+        let flag = true
+        let currentColor = 0;
+
+        // Stairs
+        let rectNum = 0;
+        let rectHeight = 100;
+        let rectWidth = 160;
+        let rectColor = 'brown';
+        let rectY = 500;
+        let rectX = 200;
+
+        let stairsPosX = [200, 360, 520, 680, 840];
+        let stairsPosY = [500, 400, 300, 200, 100];
+
+        let stairsPosXCopy = stairsPosX.slice();
+        let currentXRange = stairsPosXCopy.pop();
+
+        let stairsPosYCopy = stairsPosY.slice(0, -1);
+        let currentYRange = stairsPosYCopy.pop();
+        let falls = false;
+
+
+        // Ball
+        let ballRadius = 25;
+        let ballX = 925;
+        let ballY = 75;
+
+        window.onload = init;
+
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+
+        function init() {
+            canvas = document.querySelector('#myCanvas');
+            context = canvas.getContext('2d');
+
+            requestAnimationFrame(animate);
+            var a = setInterval(changeParameters, 1000);
+            setTimeout(() => { setInterval(ballUpdate, 100) }, 5000);
+
+        }
+
+        function animate() {
+            if (rectNum < 5) {
+                context.beginPath();
+                context.fillStyle = rectColor;
+                context.fillRect(rectX, rectY, rectWidth, rectHeight);
+            } else {
+                context.clearRect(0, 0, 1000, 600);
+                drawStairs();
+                context.beginPath();
+                context.arc(ballX, ballY, ballRadius, 0, 2 * Math.PI, false);
+                context.fillStyle = 'blue';
+                context.fill();
+            }
+
+
+            requestAnimationFrame(animate);
+        }
+
+        function changeParameters() {
+            if (rectNum < 5) {
+                rectNum++;
+                rectX += rectWidth;
+                rectY -= 100;
+                rectHeight += 100;
+            }
+        }
+
+        function ballUpdate() {
+            if (ballX > currentXRange) {
+                ballX -= 5;
+                if (falls) {
+                    ballY += 5;
+                    if (ballY + ballRadius > currentYRange) {
+                        falls = false;
+                        currentYRange = stairsPosYCopy.pop();
+                    }
+                }
+            } else {
+                currentXRange = stairsPosXCopy.pop()
+                falls = true;
+            }
+
+            if (typeof currentXRange === 'undefined') {
+                ballX -= 5;
+                if (ballY + ballRadius < 600 ) {
+                    ballY += 5;
+                }
+            }
+        }
+
+        function drawStairs() {
+            for (let i = 0; i < 5; i++) {
+                context.beginPath();
+                context.fillStyle = rectColor;
+                context.fillRect(stairsPosX[i], stairsPosY[i], rectWidth, rectHeight);
+                rectHeight += 100;
+            }
+        } 
+    </script>
+</body>
+
+</html>

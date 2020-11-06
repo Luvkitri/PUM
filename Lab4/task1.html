@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 1</title>
+    <canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML canvas tag.</canvas>
+</head>
+
+<body>
+    <script>
+        let canvas, context;
+        let key;
+        let lastPress = 0;
+        let score = 0;
+
+        // spawn locations
+        let maxX = 465;
+        let maxY = -25;
+        let minX = 200;
+        let minY = -100;
+
+        class Wheel {
+            constructor(x, y) {
+                this.height = 20;
+                this.width = 20;
+                this.color = 'black';
+                this.x = x;
+                this.y = y;
+            }
+
+            drawWheel() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+
+        class Car {
+            constructor() {
+                this.height = 100;
+                this.width = 50;
+                this.color = 'red';
+                this.x = 400;
+                this.y = 400;
+                this.wheels = [new Wheel(390, 400), new Wheel(440, 400), new Wheel(390, 480), new Wheel(440, 480)];
+            }
+
+            drawCar() {
+                this.wheels.forEach(wheel => {
+                    wheel.drawWheel();
+                });
+
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+
+            move(x) {
+                this.wheels.forEach(wheel => {
+                    wheel.x += x;
+                });
+
+                this.x += x;
+            }
+        }
+
+        class Road {
+            constructor() {
+                this.height = 600;
+                this.width = 500;
+                this.color = 'grey';
+                this.x = 150;
+                this.y = 0;
+            }
+
+            drawRoad() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+
+        class Strip {
+            constructor(y) {
+                this.height = 50;
+                this.width = 10;
+                this.color = 'white';
+                this.x = 405;
+                this.y = y;
+            }
+
+            drawStrip() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+
+        class SideStrip {
+            constructor(x, y, color) {
+                this.height = 25;
+                this.width = 25;
+                this.color = color;
+                this.value = 0;
+                this.x = x;
+                this.y = y;
+                this.flag = true;
+            }
+
+            drawSideStrip() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+
+        class Point {
+            constructor() {
+                this.radius = 10;
+                this.x = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+                this.y = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+                this.color = 'green';
+            }
+
+            drawPoint() {
+                context.beginPath();
+                context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+                context.fillStyle = this.color;
+                context.fill();
+            }
+        }
+
+        class Obstacle {
+            constructor() {
+                this.height = 50;
+                this.width = 50;
+                this.x = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+                this.y = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+                this.color = 'black';
+            }
+
+            drawObstacle() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+
+        // Game objects
+        let car = new Car();
+        let road = new Road();
+        let stripes = [new Strip(-100), new Strip(0), new Strip(100), new Strip(200), new Strip(300), new Strip(400), new Strip(500)];
+        let leftSideStripes = [];
+        let rightSideStripes = []
+        let points = [];
+        let obstacles = [];
+
+        // validation
+        let firstStrip = -100;
+        let secondStrip = 0;
+        let firstSideStrip = -100;
+        let secondSideStrip = 0;
+
+        let maxObstacles = 2;
+        let maxPoints = 3;
+
+        let animation = true;
+
+
+        window.onload = init;
+
+        var keyPressed = {};
+        document.addEventListener('keydown', function (e) {
+            keyPressed[e.keyCode] = true;
+
+            if (keyPressed.Shift1 == true && keyPressed.Control1 == true) {
+                // Left shift+CONTROL pressed!
+                keyPressed = {}; // reset key map
+            }
+            if (keyPressed.Shift2 == true && keyPressed.Control2 == true) {
+                // Right shift+CONTROL pressed!
+                keyPressed = {};
+            }
+
+        }, false);
+
+        document.addEventListener('keyup', function (e) {
+            keyPressed[e.keyCode] = false;
+            keyPressed = {};
+        }, false);
+
+        function init() {
+            canvas = document.querySelector('#myCanvas');
+            context = canvas.getContext('2d');
+
+            initSideStripes()
+
+            requestAnimationFrame(animate);
+            var a = setInterval(spawnPoint, 3000);
+            var b = setInterval(spawnObstacle, 4000);
+        }
+
+        function spawnPoint() {
+            if (points.length < maxPoints) {
+                points.push(new Point());
+            }
+        }
+
+        function spawnObstacle() {
+            if (obstacles.length < maxObstacles) {
+                obstacles.push(new Obstacle());
+            }
+        }
+
+        function initSideStripes() {
+            let flag = true;
+            let color;
+
+            leftSideStripes = [];
+            rightSideStripes = [];
+
+            for (let i = 0; i < (road.height / 25) + 4; i++) {
+                if (flag) {
+                    color = 'red';
+                    flag = false;
+                } else {
+                    color = 'white';
+                    flag = true;
+                }
+
+                leftSideStripes.push(new SideStrip(150, (i * 25) - 100, color));
+                rightSideStripes.push(new SideStrip(625, (i * 25) - 100, color));
+            }
+        }
+
+        function drawObstacles() {
+            obstacles.forEach(obstacle => {
+                obstacle.drawObstacle();
+            });
+        }
+
+        function drawPoints() {
+            points.forEach(point => {
+                point.drawPoint();
+            });
+        }
+
+        function drawScore() {
+            context.beginPath();
+            context.font = "30px Arial";
+            context.fillStyle = 'black';
+            context.fillText("Score " + score, 10, 30);
+        }
+
+        function drawGameOver() {
+            context.beginPath();
+            context.font = "30px Arial";
+            context.fillStyle = 'black';
+            context.fillText("GAME OVER ", 325, 100);
+        }
+
+        function handleMovement() {
+            if (keyPressed[37]) {
+                if (car.x > 160) {
+                    car.move(-5);
+                }
+            }
+
+            if (keyPressed[39]) {
+                if (car.x < 590) {
+                    car.move(5);
+                }
+            }
+        }
+
+        function stripAnimation() {
+            firstStrip += 5;
+            stripes.forEach(strip => {
+                strip.y += 5;
+                if (firstStrip == secondStrip) {
+                    stripes = [new Strip(-100), new Strip(0), new Strip(100), new Strip(200), new Strip(300), new Strip(400), new Strip(500)];
+                    firstStrip = -100;
+                }
+            });
+        }
+
+        function sideAnimation() {
+            firstSideStrip += 5;
+            leftSideStripes.forEach(leftSideStrip => {
+                leftSideStrip.y += 5;
+            });
+
+            rightSideStripes.forEach(rightSideStrip => {
+                rightSideStrip.y += 5;
+            });
+
+            if (firstSideStrip == secondSideStrip) {
+                initSideStripes();
+                firstSideStrip = -100;
+            }
+        }
+
+        function roadObjectsAnimation() {
+            obstacles.forEach((obstacle, index, object) => {
+                if (obstacle.y > 625) {
+                    object.splice(index, 1);
+                } else {
+                    obstacle.y += 5;
+                }
+            });
+
+            points.forEach((point, index, object) => {
+                if (point.y > 625) {
+                    object.splice(index, 1);
+                } else {
+                    point.y += 5;
+                }
+            });
+        }
+
+        function collisionCheck() {
+            // circle - rectangle
+            points.forEach((point, pointIndex, pointsObject) => {
+                let dx = Math.abs(point.x - (car.x + car.width/2));
+                let dy = Math.abs(point.y - (car.y + car.height/2));
+
+                if (dx > (point.radius + car.width/2) ||
+                    dy > (point.radius + car.height/2)) {
+                    return;
+                } else {
+                    pointsObject.splice(pointIndex, 1);
+                    score += 1;
+                }
+            });
+
+            // rectangle - rectangle
+            obstacles.forEach((obstacle, index, object) => {
+                if (obstacle.x > (car.x + car.width/2) ||
+                    (obstacle.x + obstacle.width) < car.x ||
+                    obstacle.y > (car.y + car.height) ||
+                    (obstacle.y + obstacle.height) < car.y) {
+                    return;
+                } else {
+                    animation = false;
+                    drawGameOver();
+                }
+            })
+        }
+
+        function animate() {
+            context.clearRect(0, 0, 800, 600);
+            road.drawRoad();
+
+            stripes.forEach(strip => {
+                strip.drawStrip();
+            });
+
+            leftSideStripes.forEach(sideStrip => {
+                sideStrip.drawSideStrip();
+            });
+
+            rightSideStripes.forEach(sideStrip => {
+                sideStrip.drawSideStrip();
+            })
+
+            car.drawCar();
+            drawPoints();
+            drawObstacles();
+            drawScore();
+
+            collisionCheck();
+
+            if (animation) {
+                handleMovement();
+                stripAnimation();
+                sideAnimation();
+                roadObjectsAnimation();
+            }
+
+            requestAnimationFrame(animate);
+        }
+    </script>
+</body>
+
+</html>

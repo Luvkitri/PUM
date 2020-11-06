@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 1</title>
+    <canvas id="myCanvas" width="1000" height="600" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML canvas tag.</canvas>
+</head>
+
+<body>
+    <script>
+        let canvas, context;
+        let key;
+        let lastPress = 0;
+        let score = 0;
+
+        // Main Rectangle
+        let rectHeight = 25;
+        let rectWidth = 100;
+        let rectColor = 'red';
+        let rectY = 575;
+        let rectX = 200;
+
+        // Game objects
+        let balls = [];
+        let bullets = [];
+
+
+        class Ball {
+            constructor() {
+                this.ballRadius = 25;
+                this.ballX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+                this.ballY = Math.floor(Math.random() * (maxY - minY + 1) + minY);
+                this.ballColor = 'blue';
+            }
+
+            drawBall() {
+                context.beginPath();
+                context.arc(this.ballX, this.ballY, this.ballRadius, 0, 2 * Math.PI, false);
+                context.fillStyle = this.ballColor;
+                context.fill();
+            }
+        }
+
+        class Bullet {
+            constructor(bulletX, bulletY) {
+                this.bulletRadius = 5;
+                this.bulletX = bulletX;
+                this.bulletY = bulletY;
+                this.bulletColor = 'green';
+            }
+
+            drawBullet() {
+                context.beginPath();
+                context.arc(this.bulletX, this.bulletY, this.bulletRadius, 0, 2 * Math.PI, false);
+                context.fillStyle = this.bulletColor;
+                context.fill();
+            }
+        }
+
+        // Ball Spawn
+        let minX = Math.ceil(40);
+        let maxX = Math.floor(960)
+        let minY = Math.ceil(40);
+        let maxY = Math.floor(300);
+
+        window.onload = init;
+
+        window.addEventListener('keydown', (e) => {
+            key = e.keyCode;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            key = false;
+        });
+
+        function init() {
+            canvas = document.querySelector('#myCanvas');
+            context = canvas.getContext('2d');
+
+            requestAnimationFrame(animate);
+            var a = setInterval(spawnBalls, 1000);
+        }
+
+        function animate() {
+            context.clearRect(0, 0, 1000, 600);
+            drawScore();
+            drawMainRectangle();
+            drawBalls();
+            drawBullets();
+            updateMovement();
+            updateShooting();
+            collisionCheck();
+            requestAnimationFrame(animate);
+        }
+
+        function spawnBalls() {
+            if (balls.length < 5) {
+                balls.push(new Ball());
+            }
+        }
+
+        function drawMainRectangle() {
+            context.beginPath();
+            context.fillStyle = rectColor;
+            context.fillRect(rectX, rectY, rectWidth, rectHeight);
+        }
+
+        function drawBalls() {
+            balls.forEach(ball => {
+                ball.drawBall();
+            });
+        }
+
+        function drawBullets() {
+            bullets.forEach((bullet, index, object) => {
+                if (bullet.bulletY < 0) {
+                    object.splice(index, 1);
+                } else {
+                    bullet.bulletY -= 5;
+                    bullet.drawBullet();
+                }
+            });
+        }
+
+        function drawScore() {
+            context.beginPath();
+            context.font = "30px Arial";
+            context.fillStyle = 'black';
+            context.fillText("Score " + score, 10, 30);
+        }
+
+        function updateMovement() {
+            if (key && key == 37) {
+                if (rectX > 0) {
+                    rectX -= 5;
+                }
+            }
+
+            if (key && key == 39) {
+                if (rectX < 1000) {
+                    rectX += 5;
+                }
+            }
+        }
+
+        function updateShooting() {
+            if (key && key == 32 && (Math.abs(Date.now() - lastPress) > 500)) {
+                bullets.push(new Bullet(rectX + 50, rectY - 10));
+                lastPress = Date.now();
+            }
+        }
+
+        function collisionCheck() {
+            bullets.forEach((bullet, bulletIndex, bulletsObject) => {
+                balls.forEach((ball, ballIndex, ballsObject) => {
+                    if (Math.abs(bullet.bulletX - ball.ballX) > (bullet.bulletRadius + ball.ballRadius) ||
+                        Math.abs(bullet.bulletY - ball.ballY) > (bullet.bulletRadius + ball.ballRadius)) {
+                        return;
+                    } else {
+                        ballsObject.splice(ballIndex, 1);
+                        bulletsObject.splice(bulletIndex, 1);
+                        score += 1;
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

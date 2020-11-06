@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task1</title>
+    <canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML canvas tag.</canvas>
+</head>
+
+<body>
+    <script>
+        let canvas, context, squareY = 10;
+        let currentColor = 0;
+        let colors = ['blue', 'green'];
+        //First change: add variable to hold current color
+        let color = 0;
+
+        window.onload = init;
+
+        function init() {
+            canvas = document.querySelector('#myCanvas');
+            context = canvas.getContext('2d');
+
+            draw();
+
+            requestAnimationFrame(animate);
+            var a = setInterval(changeColor, 1000);
+        }
+
+        function draw() {
+            var centerX = canvas.width / 2;
+            var centerY = canvas.height / 2;
+            var radius = 70;
+
+            context.beginPath();
+            context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            context.fillStyle = 'blue';
+            context.fill();
+            context.lineWidth = 5;
+            context.strokeStyle = '#003300';
+            context.stroke();
+        }
+
+        function animate() {
+            context.fillStyle = colors[color];
+            context.fill();
+            requestAnimationFrame(animate);
+        }
+
+        function changeColor() {
+            color = Math.abs(color - 1);
+        }
+    </script>
+</body>
+
+</html>
