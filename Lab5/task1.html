@@ -124,3 +124,19 @@
                 context.fillRect(this.x, this.y, this.width, this.height);
             }
         }
+
+        class Bullet {
+            constructor(bulletX, bulletY) {
+                this.radius = 5;
+                this.x = bulletX;
+                this.y = bulletY;
+                this.color = 'yellow';
+            }
+
+            drawBullet() {
+                context.beginPath();
+                context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+                context.fillStyle = this.color;
+                context.fill();
+            }
+        }
