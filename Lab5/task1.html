@@ -58,3 +58,19 @@
                 context.fillRect(this.x, this.y, this.width, this.height);
             }
         }
+
+        class Strip {
+            constructor(y) {
+                this.height = 50;
+                this.width = 10;
+                this.color = 'white';
+                this.x = 405;
+                this.y = y;
+            }
+
+            drawStrip() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
