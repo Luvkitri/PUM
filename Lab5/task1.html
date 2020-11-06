@@ -209,6 +209,27 @@
             }
         }
 
+        function initSideStripes() {
+            let flag = true;
+            let color;
+
+            leftSideStripes = [];
+            rightSideStripes = [];
+
+            for (let i = 0; i < (road.height / 25) + 4; i++) {
+                if (flag) {
+                    color = 'red';
+                    flag = false;
+                } else {
+                    color = 'white';
+                    flag = true;
+                }
+
+                leftSideStripes.push(new SideStrip(150, (i * 25) - 100, color));
+                rightSideStripes.push(new SideStrip(625, (i * 25) - 100, color));
+            }
+        }
+
         function drawObstacles() {
             obstacles.forEach(obstacle => {
                 obstacle.drawObstacle();
