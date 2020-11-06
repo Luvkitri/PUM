@@ -164,6 +164,8 @@
         let speedX = 0;
         let roadSpeed = 0;
 
+        window.onload = init;
+
         var keyPressed = {};
         document.addEventListener('keydown', function (e) {
             keyPressed[e.keyCode] = true;
@@ -183,3 +185,14 @@
             keyPressed[e.keyCode] = false;
             //keyPressed = {};
         }, false);
+
+        function init() {
+            canvas = document.querySelector('#myCanvas');
+            context = canvas.getContext('2d');
+
+            initSideStripes()
+
+            requestAnimationFrame(animate);
+            var a = setInterval(spawnPoint, 3000);
+            var b = setInterval(spawnObstacle, 4000);
+        }
