@@ -331,3 +331,48 @@
                 car.move(speedX);
             }
         }
+
+        function stripAnimation() {
+            firstStrip += Math.round(roadSpeed);
+            stripes.forEach(strip => {
+                strip.y += Math.round(roadSpeed);
+                if (firstStrip >= secondStrip) {
+                    stripes = [new Strip(-100), new Strip(0), new Strip(100), new Strip(200), new Strip(300), new Strip(400), new Strip(500)];
+                    firstStrip = -100;
+                }
+            });
+        }
+
+        function sideAnimation() {
+            firstSideStrip += Math.round(roadSpeed);
+            leftSideStripes.forEach(leftSideStrip => {
+                leftSideStrip.y += Math.round(roadSpeed);
+            });
+
+            rightSideStripes.forEach(rightSideStrip => {
+                rightSideStrip.y += Math.round(roadSpeed);
+            });
+
+            if (firstSideStrip >= secondSideStrip) {
+                initSideStripes();
+                firstSideStrip = -100;
+            }
+        }
+
+        function roadObjectsAnimation() {
+            obstacles.forEach((obstacle, index, object) => {
+                if (obstacle.y > 625) {
+                    object.splice(index, 1);
+                } else {
+                    obstacle.y += Math.round(roadSpeed);
+                }
+            });
+
+            points.forEach((point, index, object) => {
+                if (point.y > 625) {
+                    object.splice(index, 1);
+                } else {
+                    point.y += Math.round(roadSpeed);
+                }
+            });
+        }
