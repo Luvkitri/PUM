@@ -14,3 +14,31 @@
             }
         }
 
+        class Car {
+            constructor() {
+                this.height = 100;
+                this.width = 50;
+                this.color = 'red';
+                this.x = 400;
+                this.y = 400;
+                this.wheels = [new Wheel(390, 400), new Wheel(440, 400), new Wheel(390, 480), new Wheel(440, 480)];
+            }
+
+            drawCar() {
+                this.wheels.forEach(wheel => {
+                    wheel.drawWheel();
+                });
+
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+
+            move(x) {
+                this.wheels.forEach(wheel => {
+                    wheel.x += x;
+                });
+
+                this.x += x;
+            }
+        }
