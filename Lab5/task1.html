@@ -108,3 +108,19 @@
                 context.fill();
             }
         }
+
+        class Obstacle {
+            constructor() {
+                this.height = 50;
+                this.width = 50;
+                this.x = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+                this.y = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+                this.color = 'black';
+            }
+
+            drawObstacle() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
