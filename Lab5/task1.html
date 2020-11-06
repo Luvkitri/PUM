@@ -376,3 +376,47 @@
                 }
             });
         }
+
+        function collisionCheck() {
+            // circle - rectangle
+            points.forEach((point, pointIndex, pointsObject) => {
+                let dx = Math.abs(point.x - (car.x + car.width / 2));
+                let dy = Math.abs(point.y - (car.y + car.height / 2));
+
+                if (dx > (point.radius + car.width / 2) ||
+                    dy > (point.radius + car.height / 2)) {
+                    return;
+                } else {
+                    pointsObject.splice(pointIndex, 1);
+                    score += 1;
+                }
+            });
+
+            // rectangle - rectangle
+            obstacles.forEach((obstacle, index, object) => {
+                if (obstacle.x > (car.x + car.width / 2) ||
+                    (obstacle.x + obstacle.width) < car.x ||
+                    obstacle.y > (car.y + car.height) ||
+                    (obstacle.y + obstacle.height) < car.y) {
+                    return;
+                } else {
+                    animation = false;
+                    drawGameOver();
+                }
+            });
+
+            bullets.forEach((bullet, bulletsIndex, bulletsObject) => {
+                obstacles.forEach((obstacle, obstaclesIndex, obstaclesObject) => {
+                    let dx = Math.abs(bullet.x - (obstacle.x + obstacle.width / 2));
+                    let dy = Math.abs(bullet.y - (obstacle.y + obstacle.height / 2));
+
+                    if (dx > (bullet.radius + obstacle.width / 2) ||
+                        dy > (bullet.radius + obstacle.height / 2)) {
+                        return;
+                    } else {
+                        bulletsObject.splice(bulletsIndex, 1);
+                        obstaclesObject.splice(obstaclesObject, 1);
+                    }
+                });
+            });
+        }
