@@ -1,3 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 1</title>
+    <canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML canvas tag.</canvas>
+</head>
+
+<body>
+    <script>
+        let canvas, context;
+        let key;
+        let lastPress = 0;
+        let score = 0;
+
+        // spawn locations
+        let maxX = 465;
+        let maxY = -25;
+        let minX = 200;
+        let minY = -100;
+
         class Wheel {
             constructor(x, y) {
                 this.height = 20;
@@ -420,3 +444,47 @@
                 });
             });
         }
+
+        function animate() {
+            context.clearRect(0, 0, 800, 600);
+            road.drawRoad();
+
+            stripes.forEach(strip => {
+                strip.drawStrip();
+            });
+
+            leftSideStripes.forEach(sideStrip => {
+                sideStrip.drawSideStrip();
+            });
+
+            rightSideStripes.forEach(sideStrip => {
+                sideStrip.drawSideStrip();
+            })
+
+            car.drawCar();
+            drawPoints();
+            drawObstacles();
+            drawScore();
+            drawBullets();
+
+            collisionCheck();
+
+            if (animation) {
+                handleMovement();
+                handleShooting();
+                stripAnimation();
+                sideAnimation();
+                roadObjectsAnimation();
+                updatePosition();
+            }
+
+            requestAnimationFrame(animate);
+        }
+    </script>
+    <br>
+    <button onmousedown="moveLeft()" onmouseup="stopMove()" ontouchstart="moveLeft()">LEFT</button>
+    <button onclick="handleShooting(true)">FIRE</button>
+    <button onmousedown="moveRight()" onmouseup="stopMove()" ontouchstart="moveRight()">RIGHT</button>
+</body>
+
+</html>
