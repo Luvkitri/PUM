@@ -42,3 +42,19 @@
                 this.x += x;
             }
         }
+
+        class Road {
+            constructor() {
+                this.height = 600;
+                this.width = 500;
+                this.color = 'grey';
+                this.x = 150;
+                this.y = 0;
+            }
+
+            drawRoad() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
