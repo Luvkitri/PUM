@@ -74,3 +74,21 @@
                 context.fillRect(this.x, this.y, this.width, this.height);
             }
         }
+
+        class SideStrip {
+            constructor(x, y, color) {
+                this.height = 25;
+                this.width = 25;
+                this.color = color;
+                this.value = 0;
+                this.x = x;
+                this.y = y;
+                this.flag = true;
+            }
+
+            drawSideStrip() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
