@@ -266,3 +266,68 @@
             context.fillStyle = 'black';
             context.fillText("GAME OVER ", 325, 100);
         }
+
+        function handleMovement() {
+            if (keyPressed[37]) {
+                if (car.x > 160 && roadSpeed > 0) {
+                    car.move(-5);
+                }
+            }
+
+            if (keyPressed[39]) {
+                if (car.x < 590 && roadSpeed > 0) {
+                    car.move(5);
+                }
+            }
+
+            if (keyPressed[38]) {
+                if (roadSpeed <= 5) {
+                    roadSpeed += 0.1;
+                }
+            }
+
+            if (keyPressed[40]) {
+                if (roadSpeed > 0) {
+                    roadSpeed -= 0.1;
+                }
+            }
+
+            if (!keyPressed[40] && !keyPressed[38]) {
+                if (roadSpeed > 0) {
+                    roadSpeed -= 0.1;
+                }
+            }
+        }
+
+        function handleShooting(flag) {
+            if ((keyPressed[32] || flag) && (Math.abs(Date.now() - lastPress) > 500)) {
+                bullets.push(new Bullet(car.x + 25, car.y));
+                lastPress = Date.now();
+            }
+        }
+
+        function moveLeft() {
+            if (car.x > 160) {
+                speedX -= 5;
+            }
+        }
+
+        function moveRight() {
+            if (car.x < 590) {
+                speedX += 5;
+            }
+        }
+
+        function stopMove() {
+            speedX = 0;
+        }
+
+        function updatePosition() {
+            if (car.x > 160 && car.x < 590) {
+                car.move(speedX);
+            } else if (car.x == 590 && speedX < 0) {
+                car.move(speedX);
+            } else if (car.x == 160 && speedX > 0) {
+                car.move(speedX);
+            }
+        }
