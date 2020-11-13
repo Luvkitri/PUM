@@ -99,7 +99,7 @@
                 switch (this.turn) {
                         // right
                         case 0:
-                            if (this.turnValue > -0.1) {
+                            if (this.turnValue > -0.35) {
                                 this.turnValue -= this.inc;
                             } else {
                                 this.nextTurn = true;
@@ -109,7 +109,7 @@
                             break; 
                         // left
                         case 1:
-                            if (this.turnValue < 0.1) {
+                            if (this.turnValue < 0.35) {
                                 this.turnValue += this.inc;
                             } else {
                                 this.nextTurn = true;
