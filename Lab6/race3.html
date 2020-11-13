@@ -80,6 +80,7 @@
                 this.inc = 0.001;
                 this.turn = 2;
                 this.turnValue = 0
+                this.nextTurn = false;
             }
 
             drawRoad() {
@@ -87,16 +88,21 @@
                 context.fillStyle = this.color;
                 context.fillRect(this.x, this.y, this.width, this.height);
 
-                if (Math.abs(Date.now() - lastTurn) > 1000 && isDriving) {
+                if (Math.abs(Date.now() - lastTurn) > 1000 && isDriving && this.nextTurn) {
                     this.turn = Math.floor(Math.random() * Math.floor(3));
                     lastTurn = Date.now();                    
                 }
+
+                this.nextTurn = false;
+
 
                 switch (this.turn) {
                         // right
                         case 0:
                             if (this.turnValue > -0.1) {
                                 this.turnValue -= this.inc;
+                            } else {
+                                this.nextTurn = true;
                             }
                             
                             context.setTransform(1,0,this.turnValue,1,0,0);
@@ -105,16 +111,20 @@
                         case 1:
                             if (this.turnValue < 0.1) {
                                 this.turnValue += this.inc;
-                            }   
+                            } else {
+                                this.nextTurn = true;
+                            }
                             
                             context.setTransform(1,0,this.turnValue,1,0,0);
                             break;
                         // straight
                         case 2:
-                            if (this.turnValue < 0) {
+                            if (Number((this.turnValue).toFixed(3)) < 0) {
                                 this.turnValue += this.inc;
-                            } else if (this.turnValue > 0) {
+                            } else if (Number((this.turnValue).toFixed(3)) > 0) {
                                 this.turnValue -= this.inc;
+                            } else {
+                                this.nextTurn = true;
                             }
 
                             context.setTransform(1,0,this.turnValue,1,0,0);
