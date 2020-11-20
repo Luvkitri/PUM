@@ -84,51 +84,51 @@
             }
 
             drawRoad() {
-                context.beginPath();                
+                context.beginPath();
                 context.fillStyle = this.color;
                 context.fillRect(this.x, this.y, this.width, this.height);
 
                 if (Math.abs(Date.now() - lastTurn) > 5000 && isDriving && this.nextTurn) {
                     this.turn = Math.floor(Math.random() * Math.floor(3));
-                    lastTurn = Date.now();                    
+                    lastTurn = Date.now();
                 }
 
                 this.nextTurn = false;
 
 
                 switch (this.turn) {
-                        // right
-                        case 0:
-                            if (this.turnValue > -0.35) {
-                                this.turnValue -= this.inc;
-                            } else {
-                                this.nextTurn = true;
-                            }
-                            
-                            context.setTransform(1,0,this.turnValue,1,0,0);
-                            break; 
-                        // left
-                        case 1:
-                            if (this.turnValue < 0.35) {
-                                this.turnValue += this.inc;
-                            } else {
-                                this.nextTurn = true;
-                            }
-                            
-                            context.setTransform(1,0,this.turnValue,1,0,0);
-                            break;
-                        // straight
-                        case 2:
-                            if (Number((this.turnValue).toFixed(3)) < 0) {
-                                this.turnValue += this.inc;
-                            } else if (Number((this.turnValue).toFixed(3)) > 0) {
-                                this.turnValue -= this.inc;
-                            } else {
-                                this.nextTurn = true;
-                            }
+                    // right
+                    case 0:
+                        if (this.turnValue > -0.35) {
+                            this.turnValue -= this.inc;
+                        } else {
+                            this.nextTurn = true;
+                        }
 
-                            context.setTransform(1,0,this.turnValue,1,0,0);
-                            break;
+                        context.setTransform(1, 0, this.turnValue, 1, 0, 0);
+                        break;
+                    // left
+                    case 1:
+                        if (this.turnValue < 0.35) {
+                            this.turnValue += this.inc;
+                        } else {
+                            this.nextTurn = true;
+                        }
+
+                        context.setTransform(1, 0, this.turnValue, 1, 0, 0);
+                        break;
+                    // straight
+                    case 2:
+                        if (Number((this.turnValue).toFixed(3)) < 0) {
+                            this.turnValue += this.inc;
+                        } else if (Number((this.turnValue).toFixed(3)) > 0) {
+                            this.turnValue -= this.inc;
+                        } else {
+                            this.nextTurn = true;
+                        }
+
+                        context.setTransform(1, 0, this.turnValue, 1, 0, 0);
+                        break;
                 }
             }
         }
@@ -354,24 +354,6 @@
                     car.move(5);
                 }
             }
-
-            // if (keyPressed[38]) {
-            //     if (roadSpeed <= 5) {
-            //         roadSpeed += 0.1;
-            //     }
-            // }
-
-            // if (keyPressed[40]) {
-            //     if (roadSpeed > 0) {
-            //         roadSpeed -= 0.1;
-            //     }
-            // }
-
-            // if (!keyPressed[40] && !keyPressed[38]) {
-            //     if (roadSpeed > 0) {
-            //         roadSpeed -= 0.1;
-            //     }
-            // }
         }
 
         function handleShooting(flag) {
@@ -394,13 +376,17 @@
         }
 
         function moveUp() {
-            acc = true;
-            isDriving = true;
+            if (roadSpeed <= 10) {
+                roadSpeed += 1;
+                isDriving = true;
+            }
         }
 
         function moveDown() {
-            acc = false;
-            isDriving = false;
+            if (roadSpeed > 0) {
+                roadSpeed -= 1;
+                isDriving = false;
+            }
         }
 
         function stopMove() {
@@ -417,12 +403,13 @@
             } else if (car.x == 160 && speedX > 0) {
                 car.move(speedX);
             }
-            if (acc || keyPressed[38]) {
-                if (roadSpeed <= 5) {
+
+            if (keyPressed[38]) {
+                if (roadSpeed <= 10) {
                     roadSpeed += 0.1;
                     isDriving = true;
                 }
-            } else if(!acc || keyPressed[40]) {
+            } else if (keyPressed[40]) {
                 if (roadSpeed > 0) {
                     roadSpeed -= 0.1;
                     isDriving = false;
@@ -556,13 +543,13 @@
         }
     </script>
     <br>
-    <button onmousedown="moveUp()" onmouseup="stopMove()" ontouchstart="moveUp()">UP</button>
+    <button onClick="moveUp()">UP</button>
     <br>
     <button onmousedown="moveLeft()" onmouseup="stopMove()" ontouchstart="moveLeft()">LEFT</button>
     <button onclick="handleShooting(true)">FIRE</button>
     <button onmousedown="moveRight()" onmouseup="stopMove()" ontouchstart="moveRight()">RIGHT</button>
     <br>
-    <button onmousedown="moveDown()" onmouseup="stopMove()" ontouchstart="moveDown()">DOWN</button>
+    <button onmousedown="moveDown()">DOWN</button>
 </body>
 
 </html>
