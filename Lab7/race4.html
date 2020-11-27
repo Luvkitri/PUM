@@ -361,11 +361,16 @@
 
         function handleOrientation(event) {
             var gamma = event.gamma;
+            console.log(gamma);
 
             if (gamma > 20) {
-                moveRight();
+                if (car.x < 590) {
+                    car.move(5);
+                }
             } else if (gamma < 20) {
-                moveLeft();
+                if (car.x > 160) {
+                    car.move(-5);
+                }
             }
         }
 
