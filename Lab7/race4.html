@@ -365,13 +365,13 @@
             var gamma = event.gamma;
             console.log(gamma);
 
-            if (gamma > 0) {
+            if (gamma > 10) {
                 if (car.x < 590) {
                     car.move(5);
                 }
             }
             
-            if (gamma < 0) {
+            if (gamma < -10) {
                 if (car.x > 160) {
                     car.move(-5);
                 }
