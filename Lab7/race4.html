@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <pre class="output"></pre>
     <script>
         let canvas, context;
         let key;
@@ -359,6 +360,7 @@
         // Accelerometer
         window.addEventListener("deviceorientation", handleOrientation, true);
 
+        let output = document.querySelector('.output');
         function handleOrientation(event) {
             var gamma = event.gamma;
             console.log(gamma);
@@ -367,11 +369,15 @@
                 if (car.x < 590) {
                     car.move(5);
                 }
-            } else if (gamma < 0) {
+            }
+            
+            if (gamma < 0) {
                 if (car.x > 160) {
                     car.move(-5);
                 }
             }
+
+            output.innerHTML += "gamma: " + gamma + "\n";
         }
 
         function handleShooting(flag) {
