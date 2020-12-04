@@ -3,13 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=0.0, maximum-scale=0.0">
     <title>Task 1</title>
     <canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
         Your browser does not support the HTML canvas tag.</canvas>
 </head>
 
-<body>
+<body style="width: 100%;">
     <pre class="output"></pre>
     <script>
         let canvas, context;
@@ -580,15 +580,15 @@
     </script>
     <br>
     <button onClick="moveUp()"
-        style="width: 100%; height: 100px; position: absolute; background-color: rgb(36, 35, 35); color: white;">UP</button>
+        style="width: 100%; height: 100px; background-color: rgb(36, 35, 35); color: white;">UP</button>
     <br>
     <button onclick="handleShooting(true)"
-        style="width: 100%; height: 100px; position: absolute; background-color: rgb(126, 0, 0); color: white;">FIRE</button>
+        style="width: 100%; height: 100px; background-color: rgb(126, 0, 0); color: white;">FIRE</button>
     <br>
     <button onmousedown="moveDown()"
-        style="width: 100%; height: 100px; position: absolute; background-color: rgb(36, 35, 35); color: white;">DOWN</button>
+        style="width: 100%; height: 100px; background-color: rgb(36, 35, 35); color: white;">DOWN</button>
     <button onmousedown="onClick()"
-        style="width: 100%; height: 100px; position: absolute; background-color: rgb(36, 35, 35); color: white;">REQUEST ORIENTATION
+        style="width: 100%; height: 100px; background-color: rgb(36, 35, 35); color: white;">REQUEST ORIENTATION
         IOS / ENABLE</button>
 </body>
 
