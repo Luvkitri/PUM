@@ -57,45 +57,23 @@
         }
 
         class Platform {
-            constructor(bulletX, bulletY) {
+            constructor() {
                 this.height = 25;
-                this.width = 50;
-                this.x = bulletX;
-                this.y = bulletY;
-                this.color = 'yellow';
+                this.width = 100;
+                this.x = 350;
+                this.y = 570;
+                this.color = 'black';
             }
 
-            drawBullet() {
+            drawPlatform() {
                 context.beginPath();
-                context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
                 context.fillStyle = this.color;
-                context.fill();
+                context.fillRect(this.x, this.y, this.width, this.height);
             }
         }
 
         // Game objects
-        let car = new Car();
-        let road = new Road();
-        let stripes = [new Strip(-100), new Strip(0), new Strip(100), new Strip(200), new Strip(300), new Strip(400), new Strip(500)];
-        let leftSideStripes = [];
-        let rightSideStripes = []
-        let points = [];
-        let obstacles = [];
-        let bullets = [];
-
-        // validation
-        let firstStrip = -100;
-        let secondStrip = 0;
-        let firstSideStrip = -100;
-        let secondSideStrip = 0;
-
-        let maxObstacles = 2;
-        let maxPoints = 3;
-
-        let animation = true;
-        let speedX = 0;
-        let roadSpeed = 0;
-        let acc = false;
+        let platform = new Platform();
 
         window.onload = init;
 
@@ -123,67 +101,7 @@
             canvas = document.querySelector('#myCanvas');
             context = canvas.getContext('2d');
 
-            initSideStripes()
-
             requestAnimationFrame(animate);
-            var a = setInterval(spawnPoint, 3000);
-            var b = setInterval(spawnObstacle, 4000);
-        }
-
-        function spawnPoint() {
-            if (points.length < maxPoints) {
-                points.push(new Point());
-            }
-        }
-
-        function spawnObstacle() {
-            if (obstacles.length < maxObstacles) {
-                obstacles.push(new Obstacle());
-            }
-        }
-
-        function initSideStripes() {
-            let flag = true;
-            let color;
-
-            leftSideStripes = [];
-            rightSideStripes = [];
-
-            for (let i = 0; i < (road.height / 25) + 4; i++) {
-                if (flag) {
-                    color = 'red';
-                    flag = false;
-                } else {
-                    color = 'white';
-                    flag = true;
-                }
-
-                leftSideStripes.push(new SideStrip(150, (i * 25) - 100, color));
-                rightSideStripes.push(new SideStrip(625, (i * 25) - 100, color));
-            }
-        }
-
-        function drawObstacles() {
-            obstacles.forEach(obstacle => {
-                obstacle.drawObstacle();
-            });
-        }
-
-        function drawPoints() {
-            points.forEach(point => {
-                point.drawPoint();
-            });
-        }
-
-        function drawBullets() {
-            bullets.forEach((bullet, index, object) => {
-                if (bullet.y < 0) {
-                    object.splice(index, 1);
-                } else {
-                    bullet.y -= 5;
-                    bullet.drawBullet();
-                }
-            });
         }
 
         function drawScore() {
@@ -401,49 +319,14 @@
 
         function animate() {
             context.clearRect(0, 0, 800, 600);
-            road.drawRoad();
 
-            stripes.forEach(strip => {
-                strip.drawStrip();
-            });
-
-            leftSideStripes.forEach(sideStrip => {
-                sideStrip.drawSideStrip();
-            });
-
-            rightSideStripes.forEach(sideStrip => {
-                sideStrip.drawSideStrip();
-            })
-
-            car.drawCar();
-            drawPoints();
-            drawObstacles();
             drawScore();
-            drawBullets();
-
-            collisionCheck();
-
-            if (animation) {
-                handleMovement();
-                handleShooting();
-                stripAnimation();
-                sideAnimation();
-                roadObjectsAnimation();
-                updatePosition();
-            }
+            platform.drawPlatform();
 
             requestAnimationFrame(animate);
         }
     </script>
     <br>
-    <button onClick="moveUp()"
-        style="width: 100%; height: 100px; background-color: rgb(36, 35, 35); color: white;">UP</button>
-    <br>
-    <button onclick="handleShooting(true)"
-        style="width: 100%; height: 100px; background-color: rgb(126, 0, 0); color: white;">FIRE</button>
-    <br>
-    <button onmousedown="moveDown()"
-        style="width: 100%; height: 100px; background-color: rgb(36, 35, 35); color: white;">DOWN</button>
     <button onmousedown="onClick()"
         style="width: 100%; height: 100px; background-color: rgb(36, 35, 35); color: white;">REQUEST ORIENTATION
         IOS / ENABLE</button>
