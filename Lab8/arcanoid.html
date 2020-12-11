@@ -28,8 +28,10 @@
             constructor() {
                 this.radius = 12;
                 this.x = 400;
-                this.y = 560;
+                this.y = 550;
                 this.color = 'green';
+                this.dx = 0;
+                this.dy = 0;
             }
 
             drawBall() {
@@ -37,6 +39,8 @@
                 context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
                 context.fillStyle = this.color;
                 context.fill();
+                this.x += this.dx;
+                this.y += this.dy;
             }
         }
 
@@ -88,7 +92,7 @@
                 y += 50;
                 tempI.push(tempJ);
             }
-            
+
             return tempI;
         }
 
@@ -130,7 +134,7 @@
             for (let i = 0; i < blocks.length; i++) {
                 blocks[i].forEach(block => {
                     block.drawBlock();
-                    
+
                 });
             }
         }
@@ -179,6 +183,9 @@
                 // Accelerometer
                 window.addEventListener("deviceorientation", handleOrientation, true);
             }
+
+            ball.dx = 2;
+            ball.dy = 2;
         }
 
         function handleOrientation(event) {
@@ -295,48 +302,43 @@
             });
         }
 
-        function collisionCheck() {
+        function blocksCollisionCheck() {
             // circle - rectangle
-            points.forEach((point, pointIndex, pointsObject) => {
-                let dx = Math.abs(point.x - (car.x + car.width / 2));
-                let dy = Math.abs(point.y - (car.y + car.height / 2));
+            blocks.forEach((block, blockIndex, blocksObject) => {
+                let dx = Math.abs(ball.x - (block.x + block.width / 2));
+                let dy = Math.abs(ball.y - (block.y + block.height / 2));
 
-                if (dx > (point.radius + car.width / 2) ||
-                    dy > (point.radius + car.height / 2)) {
+                if (dx > (ball.radius + block.width / 2) ||
+                    dy > (ball.radius + block.height / 2)) {
                     return;
                 } else {
-                    pointsObject.splice(pointIndex, 1);
+                    blocksObject.splice(blockIndex, 1);
                     score += 1;
+                    ball.dy *= -1;
                 }
             });
+        }
 
-            // rectangle - rectangle
-            obstacles.forEach((obstacle, index, object) => {
-                if (obstacle.x > (car.x + car.width / 2) ||
-                    (obstacle.x + obstacle.width) < car.x ||
-                    obstacle.y > (car.y + car.height) ||
-                    (obstacle.y + obstacle.height) < car.y) {
-                    return;
-                } else {
-                    animation = false;
-                    drawGameOver();
-                }
-            });
+        function platformCollisionCheck() {
+            let dx = Math.abs(ball.x - (platform.x + platform.width / 2));
+            let dy = Math.abs(ball.y - (platform.y + platform.height / 2));
 
-            bullets.forEach((bullet, bulletsIndex, bulletsObject) => {
-                obstacles.forEach((obstacle, obstaclesIndex, obstaclesObject) => {
-                    let dx = Math.abs(bullet.x - (obstacle.x + obstacle.width / 2));
-                    let dy = Math.abs(bullet.y - (obstacle.y + obstacle.height / 2));
+            if (dx > (ball.radius + platform.width / 2) ||
+                dy > (ball.radius + platform.height / 2)) {
+                return;
+            } else {
+                ball.dy *= -1;
+            }
+        }
 
-                    if (dx > (bullet.radius + obstacle.width / 2) ||
-                        dy > (bullet.radius + obstacle.height / 2)) {
-                        return;
-                    } else {
-                        bulletsObject.splice(bulletsIndex, 1);
-                        obstaclesObject.splice(obstaclesObject, 1);
-                    }
-                });
-            });
+        function canvasCollisionCheck() {
+            if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
+                ball.dx *= -1;
+            }
+
+            if (ball.y + ball.dy > canvas.height - ball.radius || ball.y + ball.dy < ball.radius) {
+                ball.dy *= -1;
+            }
         }
 
         function animate() {
@@ -346,6 +348,10 @@
             platform.drawPlatform();
             ball.drawBall();
             drawBlocks();
+
+            blocksCollisionCheck();
+            platformCollisionCheck();
+            canvasCollisionCheck();
 
             requestAnimationFrame(animate);
         }
@@ -360,9 +366,9 @@
         <div style="display: flex; flex-direction: column; justify-content: center; width: 50%;">
             <button onmousedown="moveDown()"
                 style="width: 100%; height: 100px; background-color: rgb(36, 35, 35); color: white;">RIGHT</button>
-        </div>   
+        </div>
     </div>
-    
+
     <button onmousedown="onClick()"
         style="width: 100%; height: 100px; background-color: rgb(36, 35, 35); color: white;">START GAME</button>
 </body>
