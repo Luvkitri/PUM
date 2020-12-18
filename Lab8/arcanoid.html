@@ -213,41 +213,40 @@
                 value = event.gamma;
             }
              
-            if (value >= -5 && value <= 5) {
+            if (value >= -4 && value <= 4) {
                 speedX = 0;
+                return;
             }
 
             if (value <= 14 && value > 5 && platform.x <= 675) {
                 speedX = 4;
+                return;
             }
 
             if (value <= 22 && value > 14 && platform.x <= 675) {
                 speedX = 7;
+                return;
             }
 
             if (value > 22 && platform.x <= 675) {
                 speedX = 9;
+                return;
             }
 
             if (value < -5 && value >= -14 && platform.x >= 0) {
                 speedX = -4;
+                return;
             }
 
             if (value < -14 && value >= -22 && platform.x >= 0) {
                 speedX = -7;
+                return;
             }
 
             if (value < -22 && platform.x >= 0) {
                 speedX = -9;
+                return;
             }
-
-            console.log(landscapeOrientation);
-            if (landscapeOrientation) {
-                output.innerHTML = "betta: " + value + "\n";
-            } else {
-                output.innerHTML = "gamma: " + value + "\n";
-            }
-           
         }
 
         function moveLeftClick() {
