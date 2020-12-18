@@ -213,24 +213,24 @@
                 value = event.gamma;
             }
 
-            if (platform.x == 660) {
+            if (platform.x == 660 && speedX > 0) {
                 speedX = 15;
                 return;
-            } else if (platform.x == 665) {
+            } else if (platform.x == 665 && speedX > 0) {
                 speedX = 10;
                 return;
-            } else if (platform.x == 670) {
+            } else if (platform.x == 670 && speedX > 0) {
                 speedX = 5;
                 return;
             }
 
-            if (platform.x == 15) {
+            if (platform.x == 15 && speedX < 0) {
                 speedX = -15;
                 return;
-            } else if (platform.x == 10) {
+            } else if (platform.x == 10 && speedX < 0) {
                 speedX = -10;
                 return;
-            } else if (platform.x == 5) {
+            } else if (platform.x == 5 && speedX < 0) {
                 speedX = -5;
                 return;
             }
@@ -240,17 +240,17 @@
                 return;
             }
 
-            if (value <= 14 && value > 5) {
+            if (value <= 15 && value > 5) {
                 speedX = 5;
                 return;
             }
 
-            if (value <= 22 && value > 14) {
+            if (value <= 25 && value > 14) {
                 speedX = 10;
                 return;
             }
 
-            if (value > 22) {
+            if (value > 25) {
                 speedX = 15;
                 return;
             }
