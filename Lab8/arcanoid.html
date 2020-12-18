@@ -201,8 +201,8 @@
                 window.addEventListener("deviceorientation", handleOrientation, true);
             }
 
-            ball.dx = 2;
-            ball.dy = 2;
+            ball.dx = 4;
+            ball.dy = 4;
         }
 
         function handleOrientation(event) {
@@ -215,11 +215,11 @@
              
 
             if (value > 3 && platform.x < 675) {
-                platform.move(5);
+                speedX += 5;
             }
 
             if (value < -3 && platform.x > 0) {
-                platform.move(-5);
+                speedX -= 5;
             }
 
             console.log(landscapeOrientation);
