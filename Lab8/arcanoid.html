@@ -30,7 +30,7 @@
         class Ball {
             constructor() {
                 this.radius = 12;
-                this.x = 400;
+                this.x = 385;
                 this.y = 550;
                 this.color = 'green';
                 this.dx = 0;
@@ -214,7 +214,7 @@
             }
              
 
-            if (value > 3 && platform.x < 700) {
+            if (value > 3 && platform.x < 675) {
                 platform.move(5);
             }
 
@@ -238,7 +238,7 @@
         }
 
         function moveRightClick() {
-            if (platform.x < 700) {
+            if (platform.x < 675) {
                 speedX += 5;
             }
         }
@@ -255,16 +255,16 @@
             }
 
             if (keyPressed[39]) {
-                if (platform.x < 700) {
+                if (platform.x < 675) {
                     platform.move(5);
                 }
             }
         }
 
         function updatePosition() {
-            if (platform.x > 0 && platform.x < 700) {
+            if (platform.x > 0 && platform.x < 675) {
                 platform.move(speedX);
-            } else if (platform.x == 700 && speedX < 0) {
+            } else if (platform.x == 675 && speedX < 0) {
                 platform.move(speedX);
             } else if (platform.x == 0 && speedX > 0) {
                 platform.move(speedX);
