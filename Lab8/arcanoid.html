@@ -143,6 +143,8 @@
 
             window.addEventListener('orientationchange', checkOrientation, true);
 
+            checkOrientation();
+
             requestAnimationFrame(animate);
         }
 
@@ -220,6 +222,7 @@
                 platform.move(-5);
             }
 
+            console.log(landscapeOrientation);
             if (landscapeOrientation) {
                 output.innerHTML = "betta: " + value + "\n";
             } else {
