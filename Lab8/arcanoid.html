@@ -66,8 +66,8 @@
         class Platform {
             constructor() {
                 this.height = 25;
-                this.width = 100;
-                this.x = 350;
+                this.width = 125;
+                this.x = 325;
                 this.y = 570;
                 this.color = 'black';
             }
@@ -186,11 +186,11 @@
         function handleOrientation(event) {
             var gamma = event.gamma;
 
-            if (gamma > 0 && platform.x < 700) {
+            if (gamma > 3 && platform.x < 700) {
                 platform.move(5);
             }
 
-            if (gamma < 0 && platform.x > 0) {
+            if (gamma < -3 && platform.x > 0) {
                 platform.move(-5);
             }
 
