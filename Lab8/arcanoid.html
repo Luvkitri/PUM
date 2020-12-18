@@ -218,8 +218,24 @@
                 platform.move(5);
             }
 
+            if (value > 8 && platform.x < 675) {
+                platform.move(6);
+            }
+
+            if (value > 11 && platform.x < 675) {
+                platform.move(7);
+            }
+
             if (value < -5 && platform.x > 0) {
                 platform.move(-5);
+            }
+
+            if (value < -8 && platform.x > 0) {
+                platform.move(-6);
+            }
+
+            if (value < -11 && platform.x > 0) {
+                platform.move(-7);
             }
 
             console.log(landscapeOrientation);
