@@ -212,21 +212,17 @@
             } else {
                 value = event.gamma;
             }
-             
-            if (value > -5 && value < 5) {
-                speedX = 0;
-            }
 
             if (value > 5 && platform.x < 675) {
                 speedX = 4;
             }
 
             if (value > 14 && platform.x < 675) {
-                speedX = 5;
+                speedX = 7;
             }
 
             if (value > 22 && platform.x < 675) {
-                speedX = 6;
+                speedX = 9;
             }
 
             if (value < -5 && platform.x > 0) {
@@ -234,11 +230,11 @@
             }
 
             if (value < -14 && platform.x > 0) {
-                speedX = -5;
+                speedX = -7;
             }
 
             if (value < -22 && platform.x > 0) {
-                speedX = -6;
+                speedX = -9;
             }
 
             console.log(landscapeOrientation);
