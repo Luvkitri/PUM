@@ -212,6 +212,16 @@
             } else {
                 value = event.gamma;
             }
+
+            if (platform.x >= 667) {
+                speedX = 9;
+                return;
+            }
+
+            if (platform.x <= 9) {
+                speedX = -9;
+                return;
+            }
              
             if (value >= -4 && value <= 4) {
                 speedX = 0;
@@ -284,9 +294,9 @@
             console.log("X: " + platform.x);
             if (platform.x > 0 && platform.x < 675) {
                 platform.move(speedX);
-            } else if (platform.x <= 700 && speedX < 0) {
+            } else if (platform.x == 675 && speedX < 0) {
                 platform.move(speedX);
-            } else if (platform.x >= -9 && speedX > 0) {
+            } else if (platform.x == 0 && speedX > 0) {
                 platform.move(speedX);
             }
         }
