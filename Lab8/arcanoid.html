@@ -110,6 +110,9 @@
 
         let speedX = 0;
 
+        
+        let landscapeOrientation = false;
+
         window.onload = init;
 
         var keyPressed = {};
@@ -132,23 +135,28 @@
             // keyPressed = {};
         }, false);
 
+
+
         function init() {
             canvas = document.querySelector('#myCanvas');
+            context = canvas.getContext('2d');
 
-            if (canvas.getContext) {
-                context = canvas.getContext('2d');
-                
-                window.addEventListener('resize', resizeCanvas, false);
-                window.addEventListener('orientationchange', resizeCanvas, false);
-                resizeCanvas();
-            }
+            window.addEventListener('orientationchange', checkOrientation, true);
 
             requestAnimationFrame(animate);
         }
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        function checkOrientation() {
+            let orientation = (screen.orientation || {}).type || screen.mozOrientation || screen.msOrientation;
+            if (orientation === "landscape-primary") {
+                landscapeOrientation = true;
+            } else if (orientation === "landscape-secondary") {
+                landscapeOrientation = true;
+            } else if (orientation === "portrait-secondary" || orientation === "portrait-primary") {
+                landscapeOrientation = false;
+            } else if (orientation === undefined) {
+                landscapeOrientation = false;
+            }
         }
 
         function drawBlocks() {
@@ -196,7 +204,13 @@
         }
 
         function handleOrientation(event) {
-            var gamma = event.gamma;
+            let value;
+            if (landscapeOrientation) {
+                value = event.beta;
+            } else {
+                value = event.gamma;
+            }
+             
 
             if (gamma > 3 && platform.x < 700) {
                 platform.move(5);
@@ -206,7 +220,12 @@
                 platform.move(-5);
             }
 
-            output.innerHTML = "gamma: " + gamma + "\n";
+            if (landscapeOrientation) {
+                output.innerHTML = "betta: " + value + "\n";
+            } else {
+                output.innerHTML = "gamma: " + value + "\n";
+            }
+           
         }
 
         function moveLeftClick() {
