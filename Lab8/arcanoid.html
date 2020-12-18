@@ -8,7 +8,7 @@
     <canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
         Your browser does not support the HTML canvas tag.</canvas>
     <style>
-       
+
     </style>
 </head>
 
@@ -134,9 +134,21 @@
 
         function init() {
             canvas = document.querySelector('#myCanvas');
-            context = canvas.getContext('2d');
+
+            if (canvas.getContext) {
+                context = canvas.getContext('2d');
+                
+                window.addEventListener('resize', resizeCanvas, false);
+                window.addEventListener('orientationchange', resizeCanvas, false);
+                resizeCanvas();
+            }
 
             requestAnimationFrame(animate);
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
 
         function drawBlocks() {
