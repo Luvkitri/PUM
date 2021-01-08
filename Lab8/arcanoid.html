@@ -150,6 +150,7 @@
 
         function checkOrientation() {
             let orientation = (screen.orientation || {}).type || screen.mozOrientation || screen.msOrientation;
+            alert(orientation);
             if (orientation === "landscape-primary") {
                 landscapeOrientation = true;
             } else if (orientation === "landscape-secondary") {
