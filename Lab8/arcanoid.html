@@ -110,7 +110,7 @@
 
         let speedX = 0;
 
-        
+
         let landscapeOrientation = false;
 
         window.onload = init;
@@ -143,23 +143,38 @@
 
             window.addEventListener('orientationchange', checkOrientation, true);
 
-            checkOrientation();
-
             requestAnimationFrame(animate);
         }
 
+        window.onorientationchange = checkOrientation;
+
         function checkOrientation() {
-            let orientation = (screen.orientation || {}).type || screen.mozOrientation || screen.msOrientation;
-            alert(orientation);
-            if (orientation === "landscape-primary") {
-                landscapeOrientation = true;
-            } else if (orientation === "landscape-secondary") {
-                landscapeOrientation = true;
-            } else if (orientation === "portrait-secondary" || orientation === "portrait-primary") {
-                landscapeOrientation = false;
-            } else if (orientation === undefined) {
-                landscapeOrientation = false;
+            //let orientation = (screen.orientation || {}).type || screen.mozOrientation || screen.msOrientation;
+            //alert(orientation);
+            switch (window.orientation) {
+                case 0:
+                    landscapeOrientation = false;
+                    break;
+                case 180:
+                    landscapeOrientation = false;
+                    break;
+                case -90:
+                    landscapeOrientation = true;
+                    break;
+                case 90:
+                    landscapeOrientation = true;
+                    break;
             }
+
+            // if (orientation === "landscape-primary") {
+            //     landscapeOrientation = true;
+            // } else if (orientation === "landscape-secondary") {
+            //     landscapeOrientation = true;
+            // } else if (orientation === "portrait-secondary" || orientation === "portrait-primary") {
+            //     landscapeOrientation = false;
+            // } else if (orientation === undefined) {
+            //     landscapeOrientation = false;
+            // }
         }
 
         function drawBlocks() {
@@ -235,7 +250,7 @@
                 speedX = -5;
                 return;
             }
-             
+
             if (value >= -3 && value <= 3) {
                 speedX = 0;
                 return;
