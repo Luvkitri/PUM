@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5">
+    <title>Task 1</title>
+    <canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML canvas tag.</canvas>
+    <style>
+
+    </style>
+</head>
+
+<body style="width: 100%;">
+    <pre class="output"></pre>
+    <script>
+        let canvas, context;
+        let key;
+        let lastPress = 0;
+        let score = 0;
+        let isDriving = false;
+
+        // spawn locations
+        let maxX = 465;
+        let maxY = -25;
+        let minX = 200;
+        let minY = -100;
+
+        class Ball {
+            constructor() {
+                this.radius = 12;
+                this.x = 385;
+                this.y = 550;
+                this.color = 'green';
+                this.dx = 0;
+                this.dy = 0;
+            }
+
+            drawBall() {
+                context.beginPath();
+                context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+                context.fillStyle = this.color;
+                context.fill();
+                this.x += this.dx;
+                this.y += this.dy;
+            }
+        }
+
+        class Frame {
+            constructor(x, y, height, widht) {
+                this.x = x;
+                this.y = y;
+                this.height = height;
+                this.width = width;
+                this.color = 'black';
+            }
+
+            drawFrame() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+
+        class Block {
+            constructor(x, y, color) {
+                this.height = 25;
+                this.width = 70;
+                this.x = x;
+                this.y = y;
+                this.color = color;
+            }
+
+            drawBlock() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+        }
+
+        class Platform {
+            constructor() {
+                this.height = 25;
+                this.width = 125;
+                this.x = 325;
+                this.y = 570;
+                this.color = 'black';
+            }
+
+            drawPlatform() {
+                context.beginPath();
+                context.fillStyle = this.color;
+                context.fillRect(this.x, this.y, this.width, this.height);
+            }
+
+            move(dx) {
+                this.x += dx;
+            }
+        }
+
+        function initBlocks() {
+            let tempI = [];
+            let tempJ = [];
+            let x = 25;
+            let y = 100;
+            let colors = ['red', 'orange', 'yellow'];
+
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 10; j++) {
+                    tempJ.push(new Block(x, y, colors[i]));
+                    x += 75;
+                }
+                x = 25;
+                y += 50;
+                tempI.push(tempJ);
+            }
+
+            return tempI;
+        }
+
+        function initFrame() {
+            for (let i = 0; i < 2; i++) {
+                
+            }
+        }
+
+        // Game objects
+        let platform = new Platform();
+        let ball = new Ball();
+        let blocks = initBlocks();
+
+        let speedX = 0;
+
+
+        let landscapeOrientation = false;
+
+        window.onload = init;
+
+        var keyPressed = {};
+        document.addEventListener('keydown', function (e) {
+            keyPressed[e.keyCode] = true;
+
+            if (keyPressed.Shift1 == true && keyPressed.Control1 == true) {
+                // Left shift+CONTROL pressed!
+                keyPressed = {}; // reset key map
+            }
+            if (keyPressed.Shift2 == true && keyPressed.Control2 == true) {
+                // Right shift+CONTROL pressed!
+                keyPressed = {};
+            }
+
+        }, false);
+
+        document.addEventListener('keyup', function (e) {
+            keyPressed[e.keyCode] = false;
+            // keyPressed = {};
+        }, false);
+
+
+
+        function init() {
+            canvas = document.querySelector('#myCanvas');
+            context = canvas.getContext('2d');
+
+            window.addEventListener('orientationchange', checkOrientation, true);
+
+            checkOrientation();
+
+            requestAnimationFrame(animate);
+        }
+
+        window.onorientationchange = checkOrientation;
+
+        function checkOrientation() {
+            switch (window.orientation) {
+                case 0:
+                    landscapeOrientation = false;
+                    break;
+                case 180:
+                    landscapeOrientation = false;
+                    break;
+                case -90:
+                    landscapeOrientation = true;
+                    break;
+                case 90:
+                    landscapeOrientation = true;
+                    break;
+            }
+        }
+
+        function drawBlocks() {
+            for (let i = 0; i < blocks.length; i++) {
+                blocks[i].forEach(block => {
+                    block.drawBlock();
+
+                });
+            }
+        }
+
+        function drawScore() {
+            context.beginPath();
+            context.font = "30px Arial";
+            context.fillStyle = 'black';
+            context.fillText("Score " + score, 10, 30);
+        }
+
+        function drawGameOver() {
+            context.beginPath();
+            context.font = "30px Arial";
+            context.fillStyle = 'black';
+            context.fillText("GAME OVER ", 325, 100);
+        }
+
+        let output = document.querySelector('.output');
+
+        function onClick() {
+            // feature detect
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            window.addEventListener('deviceorientation', handleOrientation, true);
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                // Accelerometer
+                window.addEventListener("deviceorientation", handleOrientation, true);
+            }
+
+            ball.dx = 3;
+            ball.dy = 3;
+        }
+
+        function handleOrientation(event) {
+            let value;
+            if (landscapeOrientation) {
+                value = event.beta;
+            } else {
+                value = event.gamma;
+            }
+
+            if (platform.x == 660 && speedX > 0) {
+                speedX = 5;
+                return;
+            } else if (platform.x == 665 && speedX > 0) {
+                speedX = 5;
+                return;
+            } else if (platform.x == 670 && speedX > 0) {
+                speedX = 5;
+                return;
+            }
+
+            if (platform.x == 15 && speedX < 0) {
+                speedX = -15;
+                return;
+            } else if (platform.x == 10 && speedX < 0) {
+                speedX = -10;
+                return;
+            } else if (platform.x == 5 && speedX < 0) {
+                speedX = -5;
+                return;
+            }
+
+            if (value >= -3 && value <= 3) {
+                speedX = 0;
+                return;
+            }
+
+            if (value <= 15 && value > 5) {
+                speedX = 5;
+                return;
+            }
+
+            if (value <= 25 && value > 14) {
+                speedX = 10;
+                return;
+            }
+
+            if (value > 25) {
+                speedX = 15;
+                return;
+            }
+
+            if (value < -5 && value >= -14) {
+                speedX = -5;
+                return;
+            }
+
+            if (value < -14 && value >= -22) {
+                speedX = -10;
+                return;
+            }
+
+            if (value < -22) {
+                speedX = -15;
+                return;
+            }
+        }
+
+        function moveLeftClick() {
+            if (platform.x > 0) {
+                speedX -= 5;
+            }
+        }
+
+        function moveRightClick() {
+            if (platform.x < 675) {
+                speedX += 5;
+            }
+        }
+
+        function stopMoveClick() {
+            speedX = 0;
+        }
+
+        function handleMovement() {
+            if (keyPressed[37]) {
+                if (platform.x > 0) {
+                    platform.move(-5);
+                }
+            }
+
+            if (keyPressed[39]) {
+                if (platform.x < 675) {
+                    platform.move(5);
+                }
+            }
+        }
+
+        function updatePosition() {
+            console.log("SPEED: " + speedX);
+            console.log("X: " + platform.x);
+            if (platform.x > 0 && platform.x < 675) {
+                platform.move(speedX);
+            } else if (platform.x == 675 && speedX < 0) {
+                platform.move(speedX);
+            } else if (platform.x == 0 && speedX > 0) {
+                platform.move(speedX);
+            }
+        }
+
+        function stripAnimation() {
+            firstStrip += Math.round(roadSpeed);
+            stripes.forEach(strip => {
+                strip.y += Math.round(roadSpeed);
+                if (firstStrip >= secondStrip) {
+                    stripes = [new Strip(-100), new Strip(0), new Strip(100), new Strip(200), new Strip(300), new Strip(400), new Strip(500)];
+                    firstStrip = -100;
+                }
+            });
+        }
+
+        function sideAnimation() {
+            firstSideStrip += Math.round(roadSpeed);
+            leftSideStripes.forEach(leftSideStrip => {
+                leftSideStrip.y += Math.round(roadSpeed);
+            });
+
+            rightSideStripes.forEach(rightSideStrip => {
+                rightSideStrip.y += Math.round(roadSpeed);
+            });
+
+            if (firstSideStrip >= secondSideStrip) {
+                initSideStripes();
+                firstSideStrip = -100;
+            }
+        }
+
+        function roadObjectsAnimation() {
+            obstacles.forEach((obstacle, index, object) => {
+                if (obstacle.y > 625) {
+                    object.splice(index, 1);
+                } else {
+                    obstacle.y += Math.round(roadSpeed);
+                }
+            });
+
+            points.forEach((point, index, object) => {
+                if (point.y > 625) {
+                    object.splice(index, 1);
+                } else {
+                    point.y += Math.round(roadSpeed);
+                }
+            });
+        }
+
+        // TODO FIX 
+        function blocksCollisionCheck() {
+            // circle - rectangle
+            for (let i = 0; i < blocks.length; i++) {
+                blocks[i].forEach((block, blockIndex, blocksObject) => {
+                    if (ball.x > block.x && ball.x < block.x + block.width && ball.y > block.y && ball.y < block.y + block.height) {
+                        ball.dy *= -1;
+                        blocksObject.splice(blockIndex, 1);
+                        score += 1;
+                    }
+                });
+            }
+        }
+
+        function platformCollisionCheck() {
+            let dx = Math.abs(ball.x - (platform.x + platform.width / 2));
+            let dy = Math.abs(ball.y - (platform.y + platform.height / 2));
+
+            if (dx > (ball.radius + platform.width / 2) ||
+                dy > (ball.radius + platform.height / 2)) {
+                return;
+            } else {
+                ball.dy *= -1;
+            }
+        }
+
+        function canvasCollisionCheck() {
+            if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
+                ball.dx *= -1;
+            }
+
+            if (ball.y + ball.dy < ball.radius) {
+                ball.dy *= -1;
+            } else if (ball.y + ball.dy > canvas.height - ball.radius) {
+                drawGameOver();
+            }
+        }
+
+        function animate() {
+            context.clearRect(0, 0, 800, 600);
+
+            requestAnimationFrame(animate);
+        }
+    </script>
+    <br>
+    <button onmousedown="onClick()"
+        style="width: 100%; height: 100px; background-color: rgb(36, 35, 35); color: white;">START GAME</button>
+</body>
+
+</html>
