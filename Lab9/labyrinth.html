@@ -256,7 +256,7 @@
                 speedY = 0;
             }
 
-            if (ball.y + speedY > canvas.height || ball.y + speedY < ball.radius) {
+            if (ball.y + speedY > canvas.height - ball.radius || ball.y + speedY < ball.radius) {
                 speedY = 0;
                 speedX = 0;
             }
