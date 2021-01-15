@@ -33,8 +33,6 @@
                 this.x = x;
                 this.y = y;
                 this.color = color;
-                this.dx = 0;
-                this.dy = 0;
             }
 
             drawBall() {
@@ -42,8 +40,6 @@
                 context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
                 context.fillStyle = this.color;
                 context.fill();
-                this.x += this.dx;
-                this.y += this.dy;
             }
 
             move(dx, dy) {
@@ -273,11 +269,11 @@
         }
 
         function canvasCollisionCheck() {
-            if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
+            if (ball.x + speedX > canvas.width - ball.radius || ball.x + speedX < ball.radius) {
                 speedX = 0;
             }
 
-            if (ball.y + ball.dy > canvas.height - ball.radius || ball.y + ball.dy < ball.radius) {
+            if (ball.y + speedY > canvas.height - ball.radius || ball.y + speedY < ball.radius) {
                 speedY = 0;
             }
         }
