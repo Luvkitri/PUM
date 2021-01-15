@@ -28,11 +28,11 @@
         let minY = -100;
 
         class Ball {
-            constructor() {
-                this.radius = 12;
-                this.x = 385;
-                this.y = 550;
-                this.color = 'green';
+            constructor(x, y, color) {
+                this.radius = 10;
+                this.x = x;
+                this.y = y;
+                this.color = color;
                 this.dx = 0;
                 this.dy = 0;
             }
@@ -45,28 +45,17 @@
                 this.x += this.dx;
                 this.y += this.dy;
             }
-        }
 
-        class Frame {
-            constructor(x, y, height, widht) {
-                this.x = x;
-                this.y = y;
-                this.height = height;
-                this.width = width;
-                this.color = 'black';
-            }
-
-            drawFrame() {
-                context.beginPath();
-                context.fillStyle = this.color;
-                context.fillRect(this.x, this.y, this.width, this.height);
+            move(dx, dy) {
+                this.x += dx;
+                this.y += -dy;
             }
         }
 
         class Block {
             constructor(x, y, color) {
-                this.height = 25;
-                this.width = 70;
+                this.height = 50;
+                this.width = 50;
                 this.x = x;
                 this.y = y;
                 this.color = color;
@@ -79,64 +68,32 @@
             }
         }
 
-        class Platform {
-            constructor() {
-                this.height = 25;
-                this.width = 125;
-                this.x = 325;
-                this.y = 570;
-                this.color = 'black';
-            }
-
-            drawPlatform() {
-                context.beginPath();
-                context.fillStyle = this.color;
-                context.fillRect(this.x, this.y, this.width, this.height);
-            }
-
-            move(dx) {
-                this.x += dx;
-            }
-        }
-
-        function initBlocks() {
-            let tempI = [];
-            let tempJ = [];
-            let x = 25;
-            let y = 100;
-            let colors = ['red', 'orange', 'yellow'];
-
-            for (let i = 0; i < 3; i++) {
-                for (let j = 0; j < 10; j++) {
-                    tempJ.push(new Block(x, y, colors[i]));
-                    x += 75;
-                }
-                x = 25;
-                y += 50;
-                tempI.push(tempJ);
-            }
-
-            return tempI;
-        }
-
-        function initFrame() {
-            for (let i = 0; i < 2; i++) {
-                
-            }
-        }
+        let board = [
+            [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+            [1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1],
+            [1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0],
+            [1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0],
+            [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0],
+            [1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0],
+            [1, 1, 1, 0, 0, 0, 0, 0, 1, -1, 1, 0, 1, 0, 1, 0],
+            [0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0],
+            [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+        ];
 
         // Game objects
-        let platform = new Platform();
-        let ball = new Ball();
-        let blocks = initBlocks();
+        let ball = new Ball(20, 20, 'green');
+        let finish = new Ball(475, 475, 'red');
 
         let speedX = 0;
-
-
+        let speedY = 0;
         let landscapeOrientation = false;
 
         window.onload = init;
 
+        // Key Press Envents
         var keyPressed = {};
         document.addEventListener('keydown', function (e) {
             keyPressed[e.keyCode] = true;
@@ -157,19 +114,20 @@
             // keyPressed = {};
         }, false);
 
-
-
+        // Init function
         function init() {
+            // Load Canvas
             canvas = document.querySelector('#myCanvas');
             context = canvas.getContext('2d');
 
+            // Add Orientatino Listener
             window.addEventListener('orientationchange', checkOrientation, true);
-
             checkOrientation();
 
             requestAnimationFrame(animate);
         }
 
+        // Check For Orientation
         window.onorientationchange = checkOrientation;
 
         function checkOrientation() {
@@ -187,29 +145,6 @@
                     landscapeOrientation = true;
                     break;
             }
-        }
-
-        function drawBlocks() {
-            for (let i = 0; i < blocks.length; i++) {
-                blocks[i].forEach(block => {
-                    block.drawBlock();
-
-                });
-            }
-        }
-
-        function drawScore() {
-            context.beginPath();
-            context.font = "30px Arial";
-            context.fillStyle = 'black';
-            context.fillText("Score " + score, 10, 30);
-        }
-
-        function drawGameOver() {
-            context.beginPath();
-            context.font = "30px Arial";
-            context.fillStyle = 'black';
-            context.fillText("GAME OVER ", 325, 100);
         }
 
         let output = document.querySelector('.output');
@@ -234,111 +169,23 @@
         }
 
         function handleOrientation(event) {
-            let value;
+            let valueX;
+            let valueY;
+
             if (landscapeOrientation) {
-                value = event.beta;
+                valueX = event.beta;
+                valueY = event.gamma
             } else {
-                value = event.gamma;
+                valueX = event.gamma;
+                valueY = event.beta;
             }
 
-            if (platform.x == 660 && speedX > 0) {
-                speedX = 5;
-                return;
-            } else if (platform.x == 665 && speedX > 0) {
-                speedX = 5;
-                return;
-            } else if (platform.x == 670 && speedX > 0) {
-                speedX = 5;
-                return;
-            }
-
-            if (platform.x == 15 && speedX < 0) {
-                speedX = -15;
-                return;
-            } else if (platform.x == 10 && speedX < 0) {
-                speedX = -10;
-                return;
-            } else if (platform.x == 5 && speedX < 0) {
-                speedX = -5;
-                return;
-            }
-
-            if (value >= -3 && value <= 3) {
-                speedX = 0;
-                return;
-            }
-
-            if (value <= 15 && value > 5) {
-                speedX = 5;
-                return;
-            }
-
-            if (value <= 25 && value > 14) {
-                speedX = 10;
-                return;
-            }
-
-            if (value > 25) {
-                speedX = 15;
-                return;
-            }
-
-            if (value < -5 && value >= -14) {
-                speedX = -5;
-                return;
-            }
-
-            if (value < -14 && value >= -22) {
-                speedX = -10;
-                return;
-            }
-
-            if (value < -22) {
-                speedX = -15;
-                return;
-            }
-        }
-
-        function moveLeftClick() {
-            if (platform.x > 0) {
-                speedX -= 5;
-            }
-        }
-
-        function moveRightClick() {
-            if (platform.x < 675) {
-                speedX += 5;
-            }
-        }
-
-        function stopMoveClick() {
-            speedX = 0;
-        }
-
-        function handleMovement() {
-            if (keyPressed[37]) {
-                if (platform.x > 0) {
-                    platform.move(-5);
-                }
-            }
-
-            if (keyPressed[39]) {
-                if (platform.x < 675) {
-                    platform.move(5);
-                }
-            }
+            speedX = 0.1 * valueX;
+            speedY = 0.1 * valueY;
         }
 
         function updatePosition() {
-            console.log("SPEED: " + speedX);
-            console.log("X: " + platform.x);
-            if (platform.x > 0 && platform.x < 675) {
-                platform.move(speedX);
-            } else if (platform.x == 675 && speedX < 0) {
-                platform.move(speedX);
-            } else if (platform.x == 0 && speedX > 0) {
-                platform.move(speedX);
-            }
+            ball.move(speedX, speedY)
         }
 
         function stripAnimation() {
@@ -424,8 +271,24 @@
             }
         }
 
+        function drawBlocks() {
+            for (let i = 0; i < board.length; i++) {
+                for (let j = 0; j < board[i].length; j++) {
+                    if (board[i][j] === 1) {
+                        let block = new Block(j * 50, i * 50, 'black');
+                        block.drawBlock();
+                    }
+                }
+            }
+        }
+
         function animate() {
             context.clearRect(0, 0, 800, 600);
+
+            // Draw Game Elements
+            ball.drawBall();
+            finish.drawBall();
+            drawBlocks();
 
             requestAnimationFrame(animate);
         }
