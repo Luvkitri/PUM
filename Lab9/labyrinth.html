@@ -252,10 +252,12 @@
 
         function canvasCollisionCheck() {
             if (ball.x + speedX > canvas.width - ball.radius || ball.x + speedX < ball.radius) {
-                speedX = 0
+                speedX = 0;
+                speedY = 0;
             }
 
             if (ball.y + speedY > canvas.height - ball.radius || ball.y + speedY < ball.radius) {
+                speedX = 0;
                 speedY = 0;
             }
         }
