@@ -163,9 +163,6 @@
                 // Accelerometer
                 window.addEventListener("deviceorientation", handleOrientation, true);
             }
-
-            ball.dx = 3;
-            ball.dy = 3;
         }
 
         function handleOrientation(event) {
@@ -180,8 +177,8 @@
                 valueY = event.beta;
             }
 
-            speedX = -0.01 * valueX;
-            speedY = -0.01 * valueY;
+            speedX = -0.1 * valueX;
+            speedY = -0.1 * valueY;
             output.innerHTML = "valueX: " + speedX + "\n";
             output.innerHTML = "ValueY: " + speedY + "\n";
         }
