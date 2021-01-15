@@ -182,6 +182,8 @@
 
             speedX = 0.1 * valueX;
             speedY = 0.1 * valueY;
+            output.innerHTML = "valueX: " + valueX + "\n";
+            output.innerHTML = "ValueY: " + valueY + "\n";
         }
 
         function updatePosition() {
@@ -289,7 +291,6 @@
             ball.drawBall();
             finish.drawBall();
             drawBlocks();
-            handleOrientation();
 
             requestAnimationFrame(animate);
         }
